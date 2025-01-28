@@ -15,3 +15,20 @@ app.get('/comments', (req, res) => {
 }
 );
 
+app.post('/comments', (req, res) => {
+    comments.push(req.body);
+    fs.writeFile(commentsPath, JSON.stringify(comments), err => {
+        if (err) {
+            res.status(500).send('An error occurred');
+        } else {
+            res.status(201).send('Comment added');
+        }
+    });
+});
+
+app.listen(3000, () => {
+    console.log('Server is listening on port 3000');
+});
+
+
+
