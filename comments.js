@@ -1,34 +1,22 @@
-//create web server
-const express = require('express'); //import express
-const app = express(); //create an express app
-const bodyParser = require('body-parser');
+// Create web server
+// Create a web server that listens on port 3000 and serves the comments.html file. Use the fs module to read the file and send it to the client. Use the http module to create the server. The file is located in the same directory as the comments.js file. 
+// The file is located in the same directory as the comments.js file.
+
+const http = require('http');
 const fs = require('fs');
-const path = require('path');
-const commentsPath = path.join(__dirname, 'comments.json');
-const comments = require(commentsPath);
 
-app.use(bodyParser.json());
-app.use(express.static('public'));
-
-app.get('/comments', (req, res) => {
-    res.json(comments);
-}
-);
-
-app.post('/comments', (req, res) => {
-    comments.push(req.body);
-    fs.writeFile(commentsPath, JSON.stringify(comments), err => {
+const server = http.createServer((req, res) => {
+    fs.readFile('comments.html', (err, data) => {
         if (err) {
-            res.status(500).send('An error occurred');
+            res.writeHead(404);
+            res.end('Not found');
         } else {
-            res.status(201).send('Comment added');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(data);
         }
     });
 });
 
-app.listen(3000, () => {
-    console.log('Server is listening on port 3000');
+server.listen(3000, () => {
+    console.log('Server is running on port 3000...');
 });
-
-
-
